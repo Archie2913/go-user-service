@@ -15,7 +15,10 @@ func main() {
     }
 
     // Инициализация приложения
-    app := app.NewApp(cfg)
+    app, err := app.NewApp(cfg)
+    if err != nil {
+        log.Fatalf("Failed to initialize app: %v", err)
+    }
     
     // Запуск приложения
     if err := app.Run(); err != nil {

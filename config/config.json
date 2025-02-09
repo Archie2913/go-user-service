@@ -4,7 +4,7 @@
         "port": ":8080"
     },
     "database": {
-        "url": "postgres://postgres:postgres@db:5432/myapp?sslmode=disable",
+        "url": "postgres://postgres:postgres@localhost:5432/myapp?sslmode=disable",
         "username": "postgres",
         "password": "postgres"
     },

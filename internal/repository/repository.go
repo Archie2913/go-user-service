@@ -6,6 +6,7 @@ import (
 	"github.com/Archie2913/go-user-service/internal/config"
 	"github.com/Archie2913/go-user-service/internal/models"
 	"time"
+	"log"
 )
 
 // Repository работает с хранилищем данных
@@ -15,12 +16,28 @@ type Repository struct {
 
 // NewRepository создает новый репозиторий
 func NewRepository(cfg config.DatabaseConfig) (*Repository, error) {
-	db, err := sql.Open("postgres", cfg.URL)
-	if err != nil {
-		return nil, err
+	var db *sql.DB
+	var err error
+	
+	// Попытки подключения к БД
+	for i := 0; i < 5; i++ {
+		db, err = sql.Open("postgres", cfg.URL)
+		if err != nil {
+			time.Sleep(time.Second * 1)
+			continue
+		}
+
+		// Проверяем подключение
+		if err = db.Ping(); err != nil {
+			time.Sleep(time.Second * 1)
+			continue
+		}
+
+		// Если подключились успешно, выходим из цикла
+		break
 	}
 
-	if err := db.Ping(); err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -30,17 +47,27 @@ func NewRepository(cfg config.DatabaseConfig) (*Repository, error) {
 // Здесь определяются методы для работы с базой данных
 
 func (r *Repository) CreateUser(user *models.User) error {
+	log.Printf("Выполнение запроса на создание пользователя: %s", user.Email)
+	
 	query := `
 		INSERT INTO users (email, password, created_at)
 		VALUES ($1, $2, $3)
 		RETURNING id`
 
-	return r.db.QueryRow(
+	err := r.db.QueryRow(
 		query,
 		user.Email,
 		user.Password,
 		time.Now(),
 	).Scan(&user.ID)
+
+	if err != nil {
+		log.Printf("Ошибка выполнения запроса: %v", err)
+		return err
+	}
+
+	log.Printf("Пользователь успешно создан в БД: %s (ID: %d)", user.Email, user.ID)
+	return nil
 }
 
 func (r *Repository) GetUserByEmail(email string) (*models.User, error) {
