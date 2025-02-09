@@ -1,0 +1,20 @@
+go-user-service/
+├── cmd/
+│   └── api/
+│       └── main.go
+├── internal/
+│   ├── app/
+│   │   └── app.go
+│   ├── config/
+│   │   └── config.go
+│   ├── handler/
+│   │   └── handler.go
+│   ├── repository/
+│   │   └── repository.go
+│   └── service/
+│       └── service.go
+├── pkg/
+│   └── logger/
+│       └── logger.go
+├── go.mod
+└── README.md 

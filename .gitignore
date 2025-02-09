@@ -1,0 +1,23 @@
+# Бинарные файлы
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+main
+
+# Тестовые файлы
+*.test
+*.out
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Зависимости
+vendor/
+
+# Локальные конфиги
+.env 
